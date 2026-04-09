@@ -93,6 +93,18 @@ namespace
         String numberStr = s.substr(start + 1, end - 1);
         String text = s.substr(end + 1);
         bool ok;
+        const int number = numberStr.toInt(&ok);
+        if(ok && number >= 0 && number <= 255 && !(ID3v1::genre(number) == text))
+          newfields.append(s.substr(1, end - 1));
+        if(!text.isEmpty())
+          newfields.append(text);
+      }
+      else {
+        // "Genre" or "12"
+        newfields.append(s);
+      }
+    }/**/
+
     if(newfields.isEmpty())
       fields.append(String());
 
