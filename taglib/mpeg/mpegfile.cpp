@@ -105,6 +105,16 @@ bool MPEG::File::isSupported(IOStream *stream)
   if(buffer.isEmpty())
       return false;
 
+  // dro change - this relates to the disabled MP3 checking
+  //              within the detectByExtension(..) calls so
+  //              it should at least allow any valid ID3v1x
+  //              files to be hopefully be handled whilst
+  //              not allowing the mp4 as mp3 issue to make
+  //              things act up as was the intent of making
+  //              the change to not just assume an mp3 ext.
+  if(buffer.startsWith("ID3"))
+    return true;
+
   const offset_t originalPosition = stream->tell();
   AdapterFile file(stream);
 
@@ -440,6 +450,8 @@ offset_t MPEG::File::firstFrameOffset()
 
 offset_t MPEG::File::lastFrameOffset()
 {
+  // dro change - see below :)
+  const long total_length = length();
   offset_t position;
 
   if(hasAPETag())
@@ -447,7 +459,14 @@ offset_t MPEG::File::lastFrameOffset()
   else if(hasID3v1Tag())
     position = d->ID3v1Location - 1;
   else
-    position = length();
+    position = total_length;
+
+  // dro change - the patch from https://github.com/taglib/taglib/pull/857
+  // uses >= instead of > and the >= case breaks length generation for cbr
+  // files where there's no appropriate header to be using so guessing has
+  // to be used which fails as its limited to ~1MB of the file being read.
+  if (position > total_length) //if the file is incomplete
+    position = total_length;// 0xfffff;     //some small value
 
   return previousFrameOffset(position);
 }
@@ -501,7 +520,13 @@ void MPEG::File::read(bool readProperties, Properties::ReadStyle readStyle)
   }
 #endif
 
-  if(readProperties)
+  /*if(readProperties)
+  // dro change - if the file has failed the id3v2
+  // tag look-up due to too much data being read &
+  // not finding even valid mpeg frames then we'll
+  // use that as a hint to avoid trying to get the
+  // properties for the file if that's being used./*/
+  if(readProperties && (d->ID3v2Location != -2))/**/
     d->properties = std::make_unique<Properties>(this, readStyle);
 
   // Make sure that we have our default tag types available.
@@ -557,5 +582,12 @@ offset_t MPEG::File::findID3v2(Properties::ReadStyle readStyle)
     }
 
     position += bufferSize();
+
+    // dro change - if we've read more than 4MB
+    // of the file & there's no indication of a
+    // valid ID3v2 tag then imho better to fail
+    // than keeping on going & blocking for it!
+    if(position >= 4194304)
+      return -2;
   }
 }

@@ -113,6 +113,8 @@ ByteVector ByteVectorList::toByteVector(const ByteVector &separator) const
 // related functions
 ////////////////////////////////////////////////////////////////////////////////
 
+#if 0 // dro change
+
 std::ostream &operator<<(std::ostream &s, const ByteVectorList &l)
 {
   for(auto it = l.begin(); it != l.end(); ++it) {
@@ -123,3 +125,5 @@ std::ostream &operator<<(std::ostream &s, const ByteVectorList &l)
   }
   return s;
 }
+
+#endif

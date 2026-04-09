@@ -113,6 +113,11 @@ namespace TagLib {
      */
     virtual int channels() const = 0;
 
+    /*!
+     * Returns the number of bits per audio sample.
+     */
+    virtual int bitsPerSample() const = 0;  // dro change
+
   protected:
 
     /*!

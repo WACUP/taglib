@@ -60,7 +60,7 @@ namespace
     StringList fields = frame->fieldList();
     StringList newfields;
 
-    for(auto s : std::as_const(fields)) {
+    /*for(auto s : std::as_const(fields)) { // dro change
       int offset = 0;
       int end = 0;
 
@@ -79,8 +79,20 @@ namespace
       if(!s.isEmpty())
         // "Genre" or "12"
         newfields.append(s);
-    }
+    }/*/
+    for(StringList::ConstIterator it = fields.begin(); it != fields.end(); ++it) {
+      String s = *it;
+      // dro changes to make this more reliable as
+      //     the startsWith(..) doesn't seem to be
+      //     correctly handling the brackets found
+      const int start = s.find("("),
+                end = s.find(")");
 
+      if(start == 0/*/s.startsWith("(")/**/ && end > 0) {
+        // "(12)Genre"
+        String numberStr = s.substr(start + 1, end - 1);
+        String text = s.substr(end + 1);
+        bool ok;
     if(newfields.isEmpty())
       fields.append(String());
 

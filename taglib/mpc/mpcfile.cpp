@@ -68,7 +68,8 @@ bool MPC::File::isSupported(IOStream *stream)
   // have keys to do a quick check. An ID3v2 tag may precede.
 
   const ByteVector id = Utils::readHeader(stream, 4, true);
-  return id == "MPCK" || id.startsWith("MP+");
+  /*return id == "MPCK" || id.startsWith("MP+");/*/ // dro change
+  return !id.isEmpty() && (id == "MPCK" || id.startsWith("MP+"));/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -174,7 +174,18 @@ String ID3v2::Tag::comment() const
       return commFrame->toString();
   }
 
-  return comments.front()->toString();
+  /*return comments.front()->toString();/*/ // dro change
+  // so that we'll only provide 'comment' if it's a
+  // pure COMM field instead of one that's custom
+  // like mixvibe stuff as this causes it to seem
+  // like there's a comment when it's not what the
+  // user expects & so we'll try to avoid it now
+  CommentsFrame* frame = dynamic_cast<CommentsFrame*>(comments.front());
+  if (frame && frame->description().isEmpty())
+  {
+    return frame->toString();
+  }
+  return String();/**/
 }
 
 String ID3v2::Tag::genre() const
@@ -314,6 +325,31 @@ void ID3v2::Tag::setTrack(unsigned int i)
   }
   setTextFrame("TRCK", String::number(i));
 }
+
+// start of dro change as this is simpler
+// for getting the in_tta to build before
+// doing a proper re-merge of it & remove
+// of some of the customisation done here
+void ID3v2::Tag::setAlbumArt(const ByteVector &v, ID3v2::AttachedPictureFrame::Type arttype, String &mimetype)
+{
+	if (v.isEmpty()) {
+		removeFrames("APIC");
+		return;
+	} else {
+		if (!d->frameListMap["APIC"].isEmpty()) {
+			removeFrames("APIC");
+		} else {
+			// do nothing
+		}
+		AttachedPictureFrame *f = new AttachedPictureFrame("APIC");
+		f->setMimeType(mimetype);
+		f->setType(arttype);
+		f->setPicture(v);
+		addFrame(f);
+	}
+	return;
+}
+// end of dro change block
 
 bool ID3v2::Tag::isEmpty() const
 {
@@ -916,4 +952,24 @@ void ID3v2::Tag::setTextFrame(const ByteVector &id, const String &value)
     addFrame(f);
     f->setText(value);
   }
+}
+
+// dro change to make it easier for in_tta to query things
+String ID3v2::Tag::getTextFrame(const ByteVector& id) const
+{
+  if (!d->frameListMap[id].isEmpty())
+    return joinTagValues(d->frameListMap[id].front()->toStringList());
+  return String();
+}
+
+TagLib::ByteVector ID3v2::Tag::albumArt(TagLib::ID3v2::AttachedPictureFrame::Type arttype, TagLib::String& mimetype)
+{
+  if (!d->frameListMap["APIC"].isEmpty()) {
+    ID3v2::AttachedPictureFrame* f = (ID3v2::AttachedPictureFrame*)d->frameListMap["APIC"].front();
+    mimetype = f->mimeType();
+    if (f->type() == arttype) {
+      return f->picture();
+    }
+  }
+  return ByteVector();
 }

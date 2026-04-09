@@ -71,7 +71,8 @@ bool TrueAudio::File::isSupported(IOStream *stream)
   // A TrueAudio file has to start with "TTA". An ID3v2 tag may precede.
 
   const ByteVector id = Utils::readHeader(stream, 3, true);
-  return id == "TTA";
+  /*return id == "TTA";/*/  // dro change
+  return !id.isEmpty() && (id == "TTA");/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

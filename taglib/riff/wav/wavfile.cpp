@@ -71,7 +71,8 @@ bool RIFF::WAV::File::isSupported(IOStream *stream)
   // A WAV file has to start with "RIFF????WAVE".
 
   const ByteVector id = Utils::readHeader(stream, 12, false);
-  return id.startsWith("RIFF") && id.containsAt("WAVE", 8);
+  /*return id.startsWith("RIFF") && id.containsAt("WAVE", 8);/*/  // dro change
+  return !id.isEmpty() && id.startsWith("RIFF") && id.containsAt("WAVE", 8);/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

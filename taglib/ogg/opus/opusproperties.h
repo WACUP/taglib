@@ -90,6 +90,11 @@ namespace TagLib {
         int channels() const override;
 
         /*!
+         * Returns the number of bits per audio sample.
+         */
+        int bitsPerSample() const;
+
+        /*!
          * The Opus codec supports decoding at multiple sample rates, there is no
          * single sample rate of the encoded stream. This returns the sample rate
          * of the original audio stream.

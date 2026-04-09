@@ -95,7 +95,9 @@ Tag *TagUnion::operator[](int index) const
 
 Tag *TagUnion::tag(int index) const
 {
-  return d->tags[index];
+  // dro change to avoid crash with files
+  // that aren't correctly named vs "tag"
+  return (d ? d->tags[index] : nullptr);
 }
 
 void TagUnion::set(int index, Tag *tag)

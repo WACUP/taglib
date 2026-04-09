@@ -92,6 +92,11 @@ namespace TagLib {
         int channels() const override;
 
         /*!
+         * Returns the number of bits per audio sample.
+         */
+        int bitsPerSample() const;
+
+        /*!
          * Returns the Speex version, currently "0" (as specified by the spec).
          */
         int speexVersion() const;

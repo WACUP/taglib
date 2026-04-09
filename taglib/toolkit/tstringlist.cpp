@@ -128,8 +128,12 @@ StringList &StringList::append(const StringList &l)
 // related functions
 ////////////////////////////////////////////////////////////////////////////////
 
+#if 0 // dro change
+
 std::ostream &operator<<(std::ostream &s, const StringList &l)
 {
   s << l.toString();
   return s;
 }
+
+#endif

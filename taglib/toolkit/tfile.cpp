@@ -353,7 +353,7 @@ offset_t File::length()
 
 unsigned int File::bufferSize()
 {
-  return 1024;
+  return /*1024/*/4096/**/; // dro change
 }
 
 void File::setValid(bool valid)

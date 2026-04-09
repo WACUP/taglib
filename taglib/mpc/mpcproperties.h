@@ -85,6 +85,11 @@ namespace TagLib {
       int channels() const override;
 
       /*!
+       * Returns the number of bits per audio sample.
+       */
+      int bitsPerSample() const;
+
+      /*!
        * Returns the version of the bitstream (SV4-SV8)
        */
       int mpcVersion() const;

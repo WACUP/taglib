@@ -660,10 +660,14 @@ namespace TagLib {
   };
 }  // namespace TagLib
 
+#if 0 // dro change
+
 /*!
  * \relates TagLib::ByteVector
  * Streams the ByteVector \a v to the output stream \a s.
  */
 TAGLIB_EXPORT std::ostream &operator<<(std::ostream &s, const TagLib::ByteVector &v);
+
+#endif
 
 #endif

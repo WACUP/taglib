@@ -93,6 +93,7 @@ class FileRef::StreamTypeResolver::StreamTypeResolverPrivate
 
 namespace
 {
+#ifdef USE_RESOLVERS  // dro change
   List<const FileRef::FileTypeResolver *> fileTypeResolvers;
 
   // Detect the file type by user-defined resolvers.
@@ -129,6 +130,7 @@ namespace
 
     return nullptr;
   }
+#endif
 
   // Detect the file type based on the file extension.
 
@@ -156,7 +158,10 @@ namespace
 
     File *file = nullptr;
 
-    if(ext == "MP3" || ext == "MP2" || ext == "AAC")
+    // dro change - disabled this as there's MP3 files out there that are actually MP4 or
+    //              something else & the default to look at the extension for them causes
+    //              problems with not finding the expected metadata/breaking playback,etc
+    if(/*ext == "MP3" ||*/ ext == "MP2" || ext == "AAC")
       file = new MPEG::File(stream, readAudioProperties, audioPropertiesStyle);
 #ifdef TAGLIB_WITH_VORBIS
     else if(ext == "OGG")
@@ -181,7 +186,8 @@ namespace
       file = new MPC::File(stream, readAudioProperties, audioPropertiesStyle);
     else if(ext == "WV")
       file = new WavPack::File(stream, readAudioProperties, audioPropertiesStyle);
-    else if(ext == "APE")
+    /*else if(ext == "APE")/*/  // dro change
+    else if(ext == "APE" || ext == "SPC")/**/
       file = new APE::File(stream, readAudioProperties, audioPropertiesStyle);
 #endif
 #ifdef TAGLIB_WITH_TRUEAUDIO
@@ -193,7 +199,7 @@ namespace
       file = new MP4::File(stream, readAudioProperties, audioPropertiesStyle);
 #endif
 #ifdef TAGLIB_WITH_ASF
-    else if(ext == "WMA" || ext == "ASF")
+    else if(ext == "WMA" || ext == "WMV" || ext == "ASF") // dro change
       file = new ASF::File(stream, readAudioProperties, audioPropertiesStyle);
 #endif
 #ifdef TAGLIB_WITH_RIFF
@@ -455,6 +461,7 @@ bool FileRef::save()
   return d->file->save();
 }
 
+#ifdef USE_RESOLVERS  // dro change
 const FileRef::FileTypeResolver *FileRef::addFileTypeResolver(const FileRef::FileTypeResolver *resolver) // static
 {
   fileTypeResolvers.prepend(resolver);
@@ -465,6 +472,7 @@ void FileRef::clearFileTypeResolvers() // static
 {
   fileTypeResolvers.clear();
 }
+#endif
 
 StringList FileRef::defaultFileExtensions()
 {
@@ -484,6 +492,7 @@ StringList FileRef::defaultFileExtensions()
   l.append("mpc");
   l.append("wv");
   l.append("ape");
+  l.append("spc");  // dro change
 #endif
 #ifdef TAGLIB_WITH_TRUEAUDIO
   l.append("tta");
@@ -536,7 +545,8 @@ StringList FileRef::defaultFileExtensions()
 
 bool FileRef::isNull() const
 {
-  return d->isNull();
+  /*return d->isNull();/*/  // dro change
+  return !d || !d->file || !d->file->isValid();/**/
 }
 
 FileRef &FileRef::operator=(const FileRef &) = default;
@@ -565,11 +575,13 @@ bool FileRef::operator!=(const FileRef &ref) const
 void FileRef::parse(FileName fileName, bool readAudioProperties,
                     AudioProperties::ReadStyle audioPropertiesStyle)
 {
+#ifdef USE_RESOLVERS  // dro change
   // Try user-defined resolvers.
 
   d->file = detectByResolvers(fileName, readAudioProperties, audioPropertiesStyle);
   if(d->file)
     return;
+#endif
 
   // Try to resolve file types based on the file extension.
 
@@ -593,6 +605,7 @@ void FileRef::parse(FileName fileName, bool readAudioProperties,
 void FileRef::parse(IOStream *stream, bool readAudioProperties,
                     AudioProperties::ReadStyle audioPropertiesStyle)
 {
+#ifdef USE_RESOLVERS  // dro change
   // Try user-defined stream resolvers.
 
   d->file = detectByResolvers(stream, readAudioProperties, audioPropertiesStyle);
@@ -604,6 +617,7 @@ void FileRef::parse(IOStream *stream, bool readAudioProperties,
   d->file = detectByResolvers(stream->name(), readAudioProperties, audioPropertiesStyle);
   if(d->file)
     return;
+#endif
 
   // Try to resolve file types based on the file extension.
 

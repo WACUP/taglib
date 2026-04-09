@@ -70,7 +70,11 @@ namespace
         pathWStr = LongLocalPathPrefix + pathWStr;
       }
     }
-    return CreateFileW(pathWStr.c_str(), access, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+    /*return CreateFileW(pathWStr.c_str(), access, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);/*/
+    // dro change - added FILE_SHARE_WRITE so we're not failing on other
+    //              cases that can work with shared access (e.g. in_ape)
+    return CreateFileW(pathWStr.c_str(), access, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                        nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);/**/
 #endif
   }
 
@@ -81,7 +85,12 @@ namespace
 
   void closeFile(FileHandle file)
   {
-    CloseHandle(file);
+    // dro change
+    if (file != InvalidFileHandle)
+    {
+      CloseHandle(file);
+      file = InvalidFileHandle;
+    }
   }
 
   size_t readFile(FileHandle file, ByteVector &buffer)
@@ -226,8 +235,9 @@ ByteVector FileStream::readBlock(size_t length)
   ByteVector buffer(static_cast<unsigned int>(length));
 
   const size_t count = readFile(d->file, buffer);
-  buffer.resize(static_cast<unsigned int>(count));
-
+  if (count < length) { // dro change
+    buffer.resize(static_cast<unsigned int>(count));
+  }
   return buffer;
 }
 
@@ -513,5 +523,5 @@ void FileStream::truncate(offset_t length)
 
 unsigned int FileStream::bufferSize()
 {
-  return 1024;
+  return /*1024/*/4096/**/; // dro change
 }

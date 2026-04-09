@@ -178,6 +178,10 @@ namespace TagLib {
      */
     String(const char *s, Type t = Latin1);
 
+    // dro change so the caller can provide the known string length instead of us
+    // having to do ::strlen(..) calls which makes things all a bit slower to set
+    String(const char* s, const size_t s_len, Type t = Latin1);
+
     /*!
      * Makes a deep copy of the data in \a v.
      */
@@ -551,22 +555,26 @@ namespace TagLib {
  *
  * Concatenates \a s1 and \a s2 and returns the result as a string.
  */
-TAGLIB_EXPORT TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2);
+/*TAGLIB_EXPORT TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2);/*/  // dro change
+TAGLIB_EXPORT const TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2);/**/
 
 /*!
  * \relates TagLib::String
  *
  * Concatenates \a s1 and \a s2 and returns the result as a string.
  */
-TAGLIB_EXPORT TagLib::String operator+(const char *s1, const TagLib::String &s2);
+/*TAGLIB_EXPORT TagLib::String operator+(const char *s1, const TagLib::String &s2);/*/  // dro change
+TAGLIB_EXPORT const TagLib::String operator+(const char *s1, const TagLib::String &s2);/**/
 
 /*!
  * \relates TagLib::String
  *
  * Concatenates \a s1 and \a s2 and returns the result as a string.
  */
-TAGLIB_EXPORT TagLib::String operator+(const TagLib::String &s1, const char *s2);
+/*TAGLIB_EXPORT TagLib::String operator+(const TagLib::String &s1, const char *s2);/*/  // dro change
+TAGLIB_EXPORT const TagLib::String operator+(const TagLib::String &s1, const char *s2);/**/
 
+#if 0 // dro change
 
 /*!
  * \relates TagLib::String
@@ -574,5 +582,7 @@ TAGLIB_EXPORT TagLib::String operator+(const TagLib::String &s1, const char *s2)
  * Send the string to an output stream.
  */
 TAGLIB_EXPORT std::ostream &operator<<(std::ostream &s, const TagLib::String &str);
+
+#endif
 
 #endif

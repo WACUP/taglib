@@ -91,6 +91,11 @@ int MPC::Properties::channels() const
   return d->channels;
 }
 
+int MPC::Properties::bitsPerSample() const
+{
+  return -1/*TODO*/;
+}
+
 int MPC::Properties::mpcVersion() const
 {
   return d->version;

@@ -85,6 +85,11 @@ int MPEG::Properties::channels() const
   return d->channels;
 }
 
+int MPEG::Properties::bitsPerSample() const
+{
+  return -1/*TODO*/;
+}
+
 const MPEG::XingHeader *MPEG::Properties::xingHeader() const
 {
   return d->xingHeader.get();

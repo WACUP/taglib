@@ -86,6 +86,11 @@ int Vorbis::Properties::channels() const
   return d->channels;
 }
 
+int Vorbis::Properties::bitsPerSample() const
+{
+  return -1/*TODO*/;
+}
+
 int Vorbis::Properties::vorbisVersion() const
 {
   return d->vorbisVersion;

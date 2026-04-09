@@ -194,3 +194,10 @@ String Tag::joinTagValues(const StringList &values)
 {
   return values.toString(" / ");
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+#include <windows.h>
+#include <../../loader/loader/runtime_helper.h>
+
+RUNTIME_HELPER_HANDLER

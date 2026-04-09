@@ -145,10 +145,17 @@ void Ogg::XiphComment::setAlbum(const String &s)
 void Ogg::XiphComment::setComment(const String &s)
 {
   if(d->commentField.isEmpty()) {
-    if(!d->fieldListMap.value("DESCRIPTION").isEmpty())
+    // dro change so we're only holding to the
+    // vorbis comment spec so "comment" isn't
+    // used if making any edits to the file...
+    /*if(!d->fieldListMap.value("DESCRIPTION").isEmpty())
       d->commentField = "DESCRIPTION";
     else
-      d->commentField = "COMMENT";
+      d->commentField = "COMMENT";/*/
+    if (!d->fieldListMap.value("COMMENT").isEmpty())
+      removeFields("COMMENT");
+
+    d->commentField = "DESCRIPTION";/**/
   }
 
   addField(d->commentField, s);

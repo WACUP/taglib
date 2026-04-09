@@ -113,10 +113,14 @@ ByteVector EBML::renderVINT(uint64_t number, int minSizeLength)
   return ByteVector(reinterpret_cast<char *>(&number) + (sizeof(number) - numBytes), numBytes);
 }
 
+#define WA_UTILS_SIMPLE
+#include <windows.h>
+#include <../loader/loader/utils.h>
 unsigned long long EBML::randomUID()
 {
-  static std::random_device device;
+  /*static std::random_device device; // dro change
   static std::mt19937 generator(device());
   static std::uniform_int_distribution<unsigned long long> distribution;
-  return distribution(generator);
+  return distribution(generator);/*/
+  return RandIPCMethod();/**/
 }

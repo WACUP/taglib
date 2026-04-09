@@ -79,6 +79,9 @@ MPEG::XingHeader::HeaderType MPEG::XingHeader::type() const
 void MPEG::XingHeader::parse(const ByteVector &data)
 {
   // Look for a Xing header.
+  if (data.isEmpty()) { // dro change
+    return;
+  }
 
   auto offset = data.find("Xing");
   if(offset < 0)

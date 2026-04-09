@@ -88,6 +88,11 @@ int Speex::Properties::channels() const
   return d->channels;
 }
 
+int Speex::Properties::bitsPerSample() const
+{
+  return -1/*TODO*/;
+}
+
 int Speex::Properties::speexVersion() const
 {
   return d->speexVersion;

@@ -84,6 +84,12 @@ namespace TagLib {
       int channels() const override;
 
       /*!
+       * Returns the number of bits per audio sample as read from the FLAC
+       * identification header.
+       */
+      int bitsPerSample() const;
+
+      /*!
        * Returns a pointer to the Xing/VBRI header if one exists or null if no
        * Xing/VBRI header was found.
        */

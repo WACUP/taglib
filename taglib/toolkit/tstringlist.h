@@ -94,7 +94,11 @@ namespace TagLib {
      * Concatenate the list of strings into one string separated by \a separator.
      */
     TAGLIB_EXPORT
-    String toString(const String &separator = " ") const;
+    // dro change so we get out multiple fields in a more
+    // sensible style split by commas instead of spaces &
+    // that makes it easier if needed to process later on
+    /*String toString(const String& separator = " ") const;/*/
+    String toString(const String& separator = ", ") const;/**/
 
     /*!
      * Appends \a s to the end of the list and returns a reference to the
@@ -124,10 +128,13 @@ namespace TagLib {
 
 }  // namespace TagLib
 
+#if 0 // dro change
 /*!
  * \related TagLib::StringList
  * Send the StringList to an output stream.
  */
 std::ostream TAGLIB_EXPORT &operator<<(std::ostream &s, const TagLib::StringList &l);
+
+#endif
 
 #endif

@@ -373,15 +373,38 @@ Map<ByteVector, String> ItemFactory::namePropertyMap() const
     {"\251mvc", "MOVEMENTCOUNT"},
     {"ownr", "OWNER"},
     {"----:com.apple.iTunes:MusicBrainz Track Id", "MUSICBRAINZ_TRACKID"},
+    {"----:com.apple.iTunes:MUSICBRAINZ_TRACKID", "MUSICBRAINZ_TRACKID"},   // dro change
+    {"----:com.apple.iTunes:MUSICBRAINZ_DISCID", "MUSICBRAINZ_DISCID"},     // dro change
     {"----:com.apple.iTunes:MusicBrainz Artist Id", "MUSICBRAINZ_ARTISTID"},
+    {"----:com.apple.iTunes:MUSICBRAINZ_ARTISTID", "MUSICBRAINZ_ARTISTID"}, // dro change
     {"----:com.apple.iTunes:MusicBrainz Album Id", "MUSICBRAINZ_ALBUMID"},
+    {"----:com.apple.iTunes:MUSICBRAINZ_ALBUMID", "MUSICBRAINZ_ALBUMID"},   // dro change
     {"----:com.apple.iTunes:MusicBrainz Album Artist Id", "MUSICBRAINZ_ALBUMARTISTID"},
     {"----:com.apple.iTunes:MusicBrainz Release Group Id", "MUSICBRAINZ_RELEASEGROUPID"},
     {"----:com.apple.iTunes:MusicBrainz Release Track Id", "MUSICBRAINZ_RELEASETRACKID"},
+    {"----:com.apple.iTunes:MUSICBRAINZ_RELEASEGROUPID", "MUSICBRAINZ_RELEASEGROUPID"}, // dro change
     {"----:com.apple.iTunes:MusicBrainz Work Id", "MUSICBRAINZ_WORKID"},
     {"----:com.apple.iTunes:MusicBrainz Album Release Country", "RELEASECOUNTRY"},
     {"----:com.apple.iTunes:MusicBrainz Album Status", "RELEASESTATUS"},
     {"----:com.apple.iTunes:MusicBrainz Album Type", "RELEASETYPE"},
+
+    // dro change to better support what other players might be using to store replaygain
+    {"----:com.apple.iTunes:MUSICBRAINZ_ALBUMSTATUS", "MUSICBRAINZ_ALBUMSTATUS"},
+    {"----:com.apple.iTunes:MUSICBRAINZ_ALBUMTYPE", "MUSICBRAINZ_ALBUMTYPE"},
+    {"----:com.apple.iTunes:replaygain_album_gain", "REPLAYGAIN_ALBUM_GAIN"},
+    {"----:com.apple.iTunes:replaygain_album_peak", "REPLAYGAIN_ALBUM_PEAK"},
+    {"----:com.apple.iTunes:replaygain_track_gain", "REPLAYGAIN_TRACK_GAIN"},
+    {"----:com.apple.iTunes:replaygain_track_peak", "REPLAYGAIN_TRACK_PEAK"},
+
+    {"----:org.hydrogenaudio.replaygain:replaygain_album_gain", "REPLAYGAIN_ALBUM_GAIN"},
+    {"----:org.hydrogenaudio.replaygain:replaygain_album_peak", "REPLAYGAIN_ALBUM_PEAK"},
+    {"----:org.hydrogenaudio.replaygain:replaygain_track_gain", "REPLAYGAIN_TRACK_GAIN"},
+    {"----:org.hydrogenaudio.replaygain:replaygain_track_peak", "REPLAYGAIN_TRACK_PEAK"},
+
+    {"----:com.apple.iTunes:UNSYNCED LYRICS", "UNSYNCED LYRICS"},
+    {"----:com.apple.iTunes:RATING", "RATING"},
+    // end of big block of additions
+
     {"----:com.apple.iTunes:ARTISTS", "ARTISTS"},
     {"----:com.apple.iTunes:ORIGINALDATE", "ORIGINALDATE"},
     {"----:com.apple.iTunes:RELEASEDATE", "RELEASEDATE"},

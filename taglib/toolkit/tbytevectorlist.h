@@ -97,10 +97,14 @@ namespace TagLib {
 
 }  // namespace TagLib
 
+#if 0 // dro change
+
 /*!
  * \related TagLib::ByteVectorList
  * Send the ByteVectorList to an output stream.
  */
 std::ostream TAGLIB_EXPORT &operator<<(std::ostream &s, const TagLib::ByteVectorList &l);
+
+#endif
 
 #endif

@@ -473,7 +473,8 @@ bool ASF::File::isSupported(IOStream *stream)
   // An ASF file has to start with the designated GUID.
 
   const ByteVector id = Utils::readHeader(stream, 16, false);
-  return id == headerGuid;
+  /*return id == headerGuid;/*/ // dro change
+  return !id.isEmpty() && id == headerGuid;/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

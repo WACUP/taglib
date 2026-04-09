@@ -35,6 +35,7 @@
 #include "tag.h"
 #include "id3v2.h"
 #include "id3v2framefactory.h"
+#include "frames/attachedpictureframe.h"
 
 namespace TagLib {
 
@@ -173,6 +174,8 @@ namespace TagLib {
       unsigned int year() const override;
       unsigned int track() const override;
 
+      ByteVector albumArt(ID3v2::AttachedPictureFrame::Type arttype, String& mimetype); // dro change
+
       void setTitle(const String &s) override;
       void setArtist(const String &s) override;
       void setAlbum(const String &s) override;
@@ -180,6 +183,8 @@ namespace TagLib {
       void setGenre(const String &s) override;
       void setYear(unsigned int i) override;
       void setTrack(unsigned int i) override;
+
+      void setAlbumArt(const ByteVector& v, ID3v2::AttachedPictureFrame::Type arttype, String& mimetype); // dro change
 
       bool isEmpty() const override;
 
@@ -384,12 +389,18 @@ namespace TagLib {
        */
       void parse(const ByteVector &origData);
 
+    public: // dro change
       /*!
        * Sets the value of the text frame with the Frame ID \a id to \a value.
        * If the frame does not exist, it is created.
        */
       void setTextFrame(const ByteVector &id, const String &value);
+      /*!
+       * Gets the value of the text frame with the Frame ID \a id.
+       */
+      String getTextFrame(const ByteVector& id) const;
 
+    protected:  // dro change
       /*!
        * Downgrade frames from ID3v2.4 (used internally and by default) to ID3v2.3.
        */

@@ -66,7 +66,8 @@ bool WavPack::File::isSupported(IOStream *stream)
   // A WavPack file has to start with "wvpk".
 
   const ByteVector id = Utils::readHeader(stream, 4, false);
-  return id == "wvpk";
+  /*return id == "wvpk";/*/ // dro change
+  return !id.isEmpty() && (id == "wvpk");/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

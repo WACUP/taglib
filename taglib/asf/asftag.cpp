@@ -242,7 +242,7 @@ namespace
     std::pair("WM/OriginalLyricist", "ORIGINALLYRICIST"),
     std::pair("WM/OriginalReleaseYear", "ORIGINALDATE"),
     std::pair("WM/Producer", "PRODUCER"),
-    std::pair("WM/ContentGroupDescription", "WORK"),
+    std::pair("WM/ContentGroupDescription", /*"WORK"/*/"GROUPING"/*dro change*/),
     std::pair("WM/SubTitle", "SUBTITLE"),
     std::pair("WM/SetSubTitle", "DISCSUBTITLE"),
     std::pair("WM/TrackNumber", "TRACKNUMBER"),
@@ -269,6 +269,16 @@ namespace
     std::pair("WM/Language", "LANGUAGE"),
     std::pair("WM/ARTISTS", "ARTISTS"),
     std::pair("ASIN", "ASIN"),
+
+    // start of dro changes for compatibility
+    std::pair("WM/Publisher", "PUBLISHER"),
+    std::pair("WM/Category", "CATEGORY"),
+    std::pair("WM/Director", "DIRECTOR"),
+    std::pair("WM/PartOfSet", "DISC"),
+    std::pair("WM/ProviderRating", "RATING"),
+    std::pair("WM/SharedUserRating", "RATING"),
+    // end of dro changes for compatibility
+
     std::pair("MusicBrainz/Track Id", "MUSICBRAINZ_TRACKID"),
     std::pair("MusicBrainz/Artist Id", "MUSICBRAINZ_ARTISTID"),
     std::pair("MusicBrainz/Album Id", "MUSICBRAINZ_ALBUMID"),
@@ -320,6 +330,9 @@ PropertyMap ASF::Tag::properties() const
             props.insert(key, String::number(attr.toUInt()));
           else
             props.insert(key, attr.toString());
+        }
+        else if (key == "RATING") { // dro change
+          props.insert(key, String::number(attr.toUInt()));
         }
         else {
           props.insert(key, attr.toString());

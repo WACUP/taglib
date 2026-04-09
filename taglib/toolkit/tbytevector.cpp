@@ -249,7 +249,9 @@ class ByteVector::ByteVectorPrivate
 {
 public:
   ByteVectorPrivate(unsigned int l, char c) :
-    data(std::make_shared<std::vector<char>>(l, c)),
+    /*data(std::make_shared<std::vector<char>>(l, c)),/*/ // dro change
+    data((l ? std::make_shared<std::vector<char>>(l, c)
+         : std::make_shared<std::vector<char>>())),/**/
     offset(0),
     length(l) { }
 
@@ -986,6 +988,8 @@ void ByteVector::detach()
 // related functions
 ////////////////////////////////////////////////////////////////////////////////
 
+#if 0 // dro change
+
 std::ostream &operator<<(std::ostream &s, const TagLib::ByteVector &v)
 {
   for(const auto &byte : v) {
@@ -993,3 +997,5 @@ std::ostream &operator<<(std::ostream &s, const TagLib::ByteVector &v)
   }
   return s;
 }
+
+#endif

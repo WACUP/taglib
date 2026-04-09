@@ -84,6 +84,11 @@ int Opus::Properties::channels() const
   return d->channels;
 }
 
+int Opus::Properties::bitsPerSample() const
+{
+  return -1/*TODO*/;
+}
+
 int Opus::Properties::inputSampleRate() const
 {
   return d->inputSampleRate;

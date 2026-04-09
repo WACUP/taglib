@@ -34,6 +34,10 @@
 #include "tstringlist.h"
 #include "tutils.h"
 
+#define WA_UTILS_SIMPLE
+#include <windows.h>
+#include <../loader/loader/utils.h>
+
 namespace
 {
   using namespace TagLib;
@@ -61,6 +65,9 @@ namespace
   {
     data.resize(length);
 
+#ifdef _MSC_VER // dro change
+#pragma warning(disable:4530)
+#endif
     try {
       const std::wstring::iterator dstEnd = utf8::utf8to16(s, s + length, data.begin());
       data.resize(dstEnd - data.begin());
@@ -71,6 +78,9 @@ namespace
       data.clear();
     }
   }
+#ifdef _MSC_VER // dro change
+#pragma warning(pop)
+#endif
 
   // Helper functions to read a UTF-16 character from an array.
   template <typename T>
@@ -115,20 +125,39 @@ namespace
         return;
       }
 
-      length--;
+      // dro change - this is done earlier on so
+      //              it should handle the null
+      //              vs non-null terminated ok
+      //length--;
     }
     else {
       swap = t != wcharByteOrder();
     }
 
-    data.resize(length);
+    /*data.resize(length);  // dro change
     for(size_t i = 0; i < length; ++i) {
       const unsigned short c = nextUTF16(&s);
       if(swap)
         data[i] = Utils::byteSwap(c);
       else
         data[i] = c;
-    }
+    }/*/
+    data.resize(length + 1);
+    for (size_t i = 0; i < length; ++i) {
+      const unsigned short d = (unsigned short)*s,
+                           c = nextUTF16(&s);
+      if (swap) {
+        // need to research this more but with the
+        // example from vigil the read value isn't
+        // swapped correctly but use of the direct
+        // wchar value is so will see if it breaks
+        // anything else or leave it.
+        /*data[i] = Utils::byteSwap(d);/*/
+        data[i] = d;/**/
+      }
+      else
+        data[i] = c;
+    }/**/
   }
 }  // namespace
 
@@ -219,6 +248,20 @@ String::String(const char *s, Type t) :
   }
 }
 
+String::String(const char *s, const size_t s_len, Type t) :
+  d(std::make_shared<StringPrivate>())
+{
+  if(s) {
+    if(t == Latin1)
+      copyFromLatin1(d->data, s, s_len);
+    else if(t == String::UTF8)
+      copyFromUTF8(d->data, s, s_len);
+    else {
+      debug("String::String() -- const char * should not contain UTF16.");
+    }
+  }
+}
+
 String::String(wchar_t c, Type t) :
   d(std::make_shared<StringPrivate>())
 {
@@ -252,7 +295,15 @@ String::String(const ByteVector &v, Type t) :
   else if(t == UTF8)
     copyFromUTF8(d->data, v.data(), v.size());
   else
-    copyFromUTF16(d->data, v.data(), v.size() / 2, t);
+    /*copyFromUTF16(d->data, v.data(), v.size() / 2, t);/*/ // dro change
+  {
+    // pre-ignore the size of the BOM otherwise it messes
+    // things up done to account for the BOM being present
+    // to help multiple values in a field being found!
+    const char* _data = v.data(), * v_data = _data;
+    const unsigned short bom = nextUTF16(&_data);
+    copyFromUTF16(d->data, v_data, (v.size() - !!((bom == 0xfeff) || (bom == 0xfffe))) / 2, t);
+  }/**/
 
   // If we hit a null in the ByteVector, shrink the string again.
   d->data.resize(::wcslen(d->data.c_str()));
@@ -728,29 +779,36 @@ void String::detach()
 // related non-member functions
 ////////////////////////////////////////////////////////////////////////////////
 
-TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2)
+/*TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2)/*/
+const TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2)/**/
 {
   TagLib::String s(s1);
   s.append(s2);
   return s;
 }
 
-TagLib::String operator+(const char *s1, const TagLib::String &s2)
+/*TagLib::String operator+(const char *s1, const TagLib::String &s2)/*/ // dro change
+const TagLib::String operator+(const char *s1, const TagLib::String &s2)/**/
 {
   TagLib::String s(s1);
   s.append(s2);
   return s;
 }
 
-TagLib::String operator+(const TagLib::String &s1, const char *s2)
+/*TagLib::String operator+(const TagLib::String &s1, const char *s2)/*/ // dro change
+const TagLib::String operator+(const TagLib::String &s1, const char *s2)/**/
 {
   TagLib::String s(s1);
   s.append(s2);
   return s;
 }
+
+#if 0 // dro change
 
 std::ostream &operator<<(std::ostream &s, const TagLib::String &str)
 {
   s << str.to8Bit(true);
   return s;
 }
+
+#endif

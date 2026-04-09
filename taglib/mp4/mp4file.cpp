@@ -59,7 +59,8 @@ bool MP4::File::isSupported(IOStream *stream)
   // An MP4 file has to have an "ftyp" box first.
 
   const ByteVector id = Utils::readHeader(stream, 8, false);
-  return id.containsAt("ftyp", 4);
+  /*return id.containsAt("ftyp", 4);/*/
+  return !id.isEmpty() && id.containsAt("ftyp", 4);/**/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

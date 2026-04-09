@@ -27,8 +27,15 @@
 
 #include <array>
 
+ // to keep the size down we share the
+ // genre list from the core with this
+#define WA_UTILS_SIMPLE
+#include <windows.h>
+#include <../../loader/loader/utils.h>
+
 using namespace TagLib;
 
+#if 0 // dro change
 namespace
 {
   constexpr std::array genres {
@@ -227,12 +234,18 @@ namespace
   };
 }  // namespace
 
+#endif
+
 StringList ID3v1::genreList()
 {
   StringList l;
-  for(auto g : genres) {
+  /*for(auto g : genres) {  // dro change
     l.append(g);
-  }
+  }/*/
+  const int count = GetID3GenreListSize();
+  for(int i = 0; i < count; i++) {
+    l.append(GetID3GenreListItem(i));
+  }/**/
 
   return l;
 }
@@ -240,23 +253,29 @@ StringList ID3v1::genreList()
 ID3v1::GenreMap ID3v1::genreMap()
 {
   GenreMap m;
-  for(size_t i = 0; i < genres.size(); i++) {
+  /*for(size_t i = 0; i < genres.size(); i++) { // dro change
     m.insert(genres[i], static_cast<int>(i));
-  }
+  }/*/
+  const int count = GetID3GenreListSize();
+  for (int i = 0; i < count; i++) {
+    m.insert(GetID3GenreListItem(i), i);
+  }/**/
 
   return m;
 }
 
 String ID3v1::genre(int index)
 {
-  if(index >= 0 && static_cast<size_t>(index) < genres.size())
-    return String(genres[index]); // always make a copy
+  /*if(index >= 0 && static_cast<size_t>(index) < genres.size())  // dro change
+    return String(genres[index]); // always make a copy/*/
+  if (index >= 0 && index < GetID3GenreListSize())
+    return String(GetID3GenreListItem(index));/**/ // always make a copy
   return String();
 }
 
 int ID3v1::genreIndex(const String &name)
 {
-  for(size_t i = 0; i < genres.size(); ++i) {
+  /*for(size_t i = 0; i < genres.size(); ++i) { // dro change
     if(name == genres[i])
       return static_cast<int>(i);
   }
@@ -274,8 +293,11 @@ int ID3v1::genreIndex(const String &name)
   };
   for(const auto &[genreName, code] : fixUpGenres) {
     if(name == genreName)
-      return code;
+      return code;/*/
+  const int count = GetID3GenreListSize();
+  for(int i = 0; i < count; ++i) {
+    if(name == GetID3GenreListItem(i))
+      return i;/**/
   }
-
   return 255;
 }

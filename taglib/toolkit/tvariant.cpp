@@ -70,6 +70,8 @@ T getVariantValue(StdVariantType *v, bool *ok)
   return {};
 }
 
+#if 0 // dro change
+
 void printStringToStream(std::ostream &s, const String &v)
 {
   s << '"';
@@ -194,6 +196,8 @@ void printVariantToStream(std::ostream &s, const StdVariantType &v)
     break;
   }
 }
+
+#endif
 
 } // namespace
 
@@ -389,8 +393,12 @@ Variant &Variant::operator=(const Variant &) = default;
 // related non-member functions
 ////////////////////////////////////////////////////////////////////////////////
 
+#if 0 // dro change
+
 std::ostream &operator<<(std::ostream &s, const TagLib::Variant &v)
 {
   printVariantToStream(s, v.d->data);
   return s;
 }
+
+#endif
