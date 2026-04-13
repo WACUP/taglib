@@ -164,13 +164,7 @@ PropertyMap Matroska::File::setProperties(const PropertyMap &properties)
 
 namespace {
 
-  constexpr offset_t FastScanLimit = static_cast<offset_t>(512 * 1024);
-
-  struct FastSegmentReadResult
-  {
-    bool success = false;
-    bool tagStateResolved = false;
-  };
+  constexpr offset_t FAST_SCAN_LIMIT = static_cast<offset_t>(512 * 1024);
 
   String keyForAttachedFile(const Matroska::AttachedFile &attachedFile)
   {
@@ -657,10 +651,15 @@ void Matroska::File::read(bool readProperties, Properties::ReadStyle readStyle)
     head->skipData(*this);
   }
 
+  offset_t maxOffset = fileLength - tell();
+  if (readStyle == Properties::ReadStyle::Fast && maxOffset > FAST_SCAN_LIMIT) {
+    maxOffset = FAST_SCAN_LIMIT;
+  }
+
   // Find the Matroska segment in the file
   const std::unique_ptr<EBML::MkSegment> segment(
     EBML::element_cast<EBML::Element::Id::MkSegment>(
-      EBML::findElement(*this, EBML::Element::Id::MkSegment, fileLength - tell())
+      EBML::findElement(*this, EBML::Element::Id::MkSegment, maxOffset)
     )
   );
   if(!segment) {
@@ -669,7 +668,24 @@ void Matroska::File::read(bool readProperties, Properties::ReadStyle readStyle)
     return;
   }
 
+  // Read the segment into memory from file
   d->segment = segment->parseSegment();
+  maxOffset = segment->getDataSize();
+  if (readStyle == Properties::ReadStyle::Fast && maxOffset > FAST_SCAN_LIMIT) {
+    maxOffset = FAST_SCAN_LIMIT;
+  }
+  if(!segment->readLimited(*this, maxOffset)) {
+    debug("Failed to read segment");
+    setValid(false);
+    return;
+  }
+
+  // Parse the elements
+  d->seekHead = segment->parseSeekHead();
+  d->cues = segment->parseCues();
+  d->tag = segment->parseTag();
+  d->attachments = segment->parseAttachments();
+  d->chapters = segment->parseChapters();
 
   if(readProperties) {
     d->properties = std::make_unique<Properties>(this);
