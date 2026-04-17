@@ -378,10 +378,23 @@ namespace
   // entries which shall not be mapped without correct target type value.
   // For offical tags, see https://www.matroska.org/technical/tagging.html
   constexpr std::array simpleTagsTranslation {
-    std::tuple("TITLE", "TITLE", Matroska::SimpleTag::TargetTypeValue::Track, false),
-    std::tuple("ALBUM", "TITLE", Matroska::SimpleTag::TargetTypeValue::Album, true),
-    std::tuple("ARTIST", "ARTIST", Matroska::SimpleTag::TargetTypeValue::Track, false),
-    std::tuple("ALBUMARTIST", "ARTIST", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    // dro change which may or may not be right but gets this working with what mp3tag does
+    std::tuple("TITLE", "TITLE", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("ALBUM", "TITLE", Matroska::SimpleTag::TargetTypeValue::Edition, true),
+    std::tuple("ARTIST", "ARTIST", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("ALBUMARTIST", "ARTIST", Matroska::SimpleTag::TargetTypeValue::Edition, true),
+
+    std::tuple("GENRE", "GENRE", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("COMMENT", "COMMENT", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("BPM", "BPM", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("ENCODEDBY", "ENCODER", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("DATE", "DATE_RECORDED", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("CATEGORY", "CATEGORY", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("COMPOSER", "COMPOSER", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("DIRECTOR", "DIRECTOR", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("PRODUCER", "PRODUCER", Matroska::SimpleTag::TargetTypeValue::Album, true),
+    std::tuple("PUBLISHER", "PUBLISHER", Matroska::SimpleTag::TargetTypeValue::Album, true),
+
     std::tuple("TRACKNUMBER", "PART_NUMBER", Matroska::SimpleTag::TargetTypeValue::Track, false),
     std::tuple("DISCNUMBER", "PART_NUMBER", Matroska::SimpleTag::TargetTypeValue::Album, true),
     std::tuple("TRACKTOTAL", "TOTAL_PARTS", Matroska::SimpleTag::TargetTypeValue::Track, false),
