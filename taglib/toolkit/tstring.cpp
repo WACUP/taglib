@@ -134,14 +134,16 @@ namespace
       swap = t != wcharByteOrder();
     }
 
-    /*data.resize(length);  // dro change
+#if 1
+    data.resize(length);    
     for(size_t i = 0; i < length; ++i) {
       const unsigned short c = nextUTF16(&s);
       if(swap)
         data[i] = Utils::byteSwap(c);
       else
         data[i] = c;
-    }/*/
+    }
+#else
     data.resize(length + 1);
     for (size_t i = 0; i < length; ++i) {
       const unsigned short d = (unsigned short)*s,
@@ -157,7 +159,8 @@ namespace
       }
       else
         data[i] = c;
-    }/**/
+    }
+#endif
   }
 }  // namespace
 
@@ -300,9 +303,13 @@ String::String(const ByteVector &v, Type t) :
     // pre-ignore the size of the BOM otherwise it messes
     // things up done to account for the BOM being present
     // to help multiple values in a field being found!
-    const char* _data = v.data(), * v_data = _data;
+    const char* _data = v.data(), *v_data = _data;
     const unsigned short bom = nextUTF16(&_data);
     copyFromUTF16(d->data, v_data, (v.size() - !!((bom == 0xfeff) || (bom == 0xfffe))) / 2, t);
+    if (!d->data.size())
+    {
+      return;
+    }
   }/**/
 
   // If we hit a null in the ByteVector, shrink the string again.

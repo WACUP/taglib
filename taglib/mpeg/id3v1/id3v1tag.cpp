@@ -67,7 +67,40 @@ StringHandler::~StringHandler() = default;
 
 String ID3v1::StringHandler::parse(const ByteVector &data) const
 {
-  return String(data, String::Latin1).stripWhiteSpace();
+  // dro changes - I know this isn't right vs specification but
+  // there's many files out there that have been created with a
+  // variety of text encodings. so instead of getting moaned at
+  // when the files should be fixed this'll try to avoid seeing
+  // issues from unexpected encoding vs missing id3v2.x frames.
+  const unsigned int data_size = data.size();
+  if (data_size > 0)
+  {
+    if ((static_cast<unsigned char>(data[0]) == 0xEF) &&
+        (static_cast<unsigned char>(data[1]) == 0xBB) &&
+        (static_cast<unsigned char>(data[2]) == 0xBF))
+    {
+      return String(data.mid(3), String::UTF8).stripWhiteSpace();
+    }
+
+    if (data_size >= 2) {
+      if ((static_cast<unsigned char>(data[0]) == 0xFF) &&
+          (static_cast<unsigned char>(data[1]) == 0xFE))
+      {
+        return String(data.mid(2), String::UTF16LE).stripWhiteSpace();
+      }
+
+      if ((static_cast<unsigned char>(data[0]) == 0xFE) &&
+          (static_cast<unsigned char>(data[1]) == 0xFF))
+      {
+        return String(data.mid(2), String::UTF16BE).stripWhiteSpace();
+      }
+
+      debug("ID3v1 tag is not valid or could not be read at the specified offset.");
+      return String();
+    }
+    return String(data, String::Latin1).stripWhiteSpace();
+  }
+  return String();
 }
 
 ByteVector ID3v1::StringHandler::render(const String &s) const
