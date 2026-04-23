@@ -94,9 +94,6 @@ String ID3v1::StringHandler::parse(const ByteVector &data) const
       {
         return String(data.mid(2), String::UTF16BE).stripWhiteSpace();
       }
-
-      debug("ID3v1 tag is not valid or could not be read at the specified offset.");
-      return String();
     }
     return String(data, String::Latin1).stripWhiteSpace();
   }
