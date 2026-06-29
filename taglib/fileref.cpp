@@ -361,11 +361,12 @@ FileRef::FileRef() :
 {
 }
 
-FileRef::FileRef(FileName fileName, bool readAudioProperties,
+FileRef::FileRef(FileName fileName, bool openReadOnly,
+                 bool readAudioProperties,
                  AudioProperties::ReadStyle audioPropertiesStyle) :
   d(std::make_shared<FileRefPrivate>())
 {
-  parse(fileName, readAudioProperties, audioPropertiesStyle);
+  parse(fileName, readAudioProperties, openReadOnly, audioPropertiesStyle);
 }
 
 FileRef::FileRef(IOStream *stream, bool readAudioProperties, AudioProperties::ReadStyle audioPropertiesStyle) :
@@ -572,7 +573,7 @@ bool FileRef::operator!=(const FileRef &ref) const
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void FileRef::parse(FileName fileName, bool readAudioProperties,
+void FileRef::parse(FileName fileName, bool readAudioProperties, bool openReadOnly,
                     AudioProperties::ReadStyle audioPropertiesStyle)
 {
 #ifdef USE_RESOLVERS  // dro change
@@ -585,7 +586,7 @@ void FileRef::parse(FileName fileName, bool readAudioProperties,
 
   // Try to resolve file types based on the file extension.
 
-  d->stream = new FileStream(fileName);
+  d->stream = new FileStream(fileName, openReadOnly);
   d->file = detectByExtension(d->stream, readAudioProperties, audioPropertiesStyle);
   if(d->file)
     return;

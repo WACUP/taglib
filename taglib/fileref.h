@@ -184,6 +184,7 @@ namespace TagLib {
      * use this method in your application.
      */
     explicit FileRef(FileName fileName,
+                     bool openReadOnly,
                      bool readAudioProperties = true,
                      AudioProperties::ReadStyle
                      audioPropertiesStyle = AudioProperties::Average);
@@ -404,7 +405,7 @@ namespace TagLib {
     bool operator!=(const FileRef &ref) const;
 
   private:
-    void parse(FileName fileName, bool readAudioProperties, AudioProperties::ReadStyle audioPropertiesStyle);
+    void parse(FileName fileName, bool readAudioProperties, bool openReadOnly, AudioProperties::ReadStyle audioPropertiesStyle);
     void parse(IOStream *stream, bool readAudioProperties, AudioProperties::ReadStyle audioPropertiesStyle);
 
     class FileRefPrivate;
