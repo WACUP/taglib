@@ -339,6 +339,7 @@ Map<ByteVector, String> ItemFactory::namePropertyMap() const
     {"\251gen", "GENRE"},
     {"\251day", "DATE"},
     {"\251wrt", "COMPOSER"},
+    {"\251pub", "PUBLISHER"},
     {"\251grp", "GROUPING"},
     {"aART", "ALBUMARTIST"},
     {"trkn", "TRACKNUMBER"},
