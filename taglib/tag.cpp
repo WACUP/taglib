@@ -190,14 +190,32 @@ void Tag::duplicate(const Tag *source, Tag *target, bool overwrite) // static
   }
 }
 
+#include <windows.h>
+#define WA_UTILS_SIMPLE
+#include <../../loader/loader/utils.h>
+
+WA_UTILS_API BOOL GetMVTC(void);
+
 String Tag::joinTagValues(const StringList &values)
 {
+  const int mvtc = GetMVTC();
+  if (mvtc == 1) {
+    return values.toString(" , ");
+  }
+  else if (mvtc == 2) {
+    return values.toString(" ; ");
+  }
+  else if (mvtc == 3) {
+    return values.toString(" | ");
+  }
+  else if (mvtc == 4) {
+    return values.toString("   ");
+  }
   return values.toString(" / ");
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-#include <windows.h>
 #include <../../loader/loader/runtime_helper.h>
 
 RUNTIME_HELPER_HANDLER
