@@ -687,8 +687,14 @@ void ASF::File::read()
     setValid(false);
     return;
   }
-  int numObjects = readDWORD(this, &ok);
+  static constexpr unsigned int MAX_ASF_HEADER_OBJECT_COUNT = 50000;
+  const unsigned int numObjects = readDWORD(this, &ok);
   if(!ok) {
+    setValid(false);
+    return;
+  }
+  if(numObjects > MAX_ASF_HEADER_OBJECT_COUNT) {
+    debug("ASF::File::read(): Maximum header object count exceeded.");
     setValid(false);
     return;
   }
@@ -696,7 +702,7 @@ void ASF::File::read()
 
   FilePrivate::FilePropertiesObject   *filePropertiesObject   = nullptr;
   FilePrivate::StreamPropertiesObject *streamPropertiesObject = nullptr;
-  for(int i = 0; i < numObjects; i++) {
+  for(unsigned int i = 0; i < numObjects; i++) {
     const ByteVector guid = readBlock(16);
     if(guid.size() != 16) {
       setValid(false);
