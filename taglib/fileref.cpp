@@ -592,7 +592,9 @@ void FileRef::parse(FileName fileName, bool readAudioProperties, bool openReadOn
     return;
 
   // At last, try to resolve file types based on the actual content.
+  // A parser tried for the extension may have left the stream anywhere.
 
+  d->stream->seek(0);
   d->file = detectByContent(d->stream, readAudioProperties, audioPropertiesStyle);
   if(d->file)
     return;
@@ -627,7 +629,9 @@ void FileRef::parse(IOStream *stream, bool readAudioProperties,
     return;
 
   // At last, try to resolve file types based on the actual content of the file.
+  // A parser tried for the extension may have left the stream anywhere.
 
+  stream->seek(0);
   d->file = detectByContent(stream, readAudioProperties, audioPropertiesStyle);
 }
 
