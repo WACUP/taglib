@@ -135,7 +135,7 @@ namespace
     }
 
 #if 1
-    data.resize(length);    
+    data.resize(length);
     for(size_t i = 0; i < length; ++i) {
       const unsigned short c = nextUTF16(&s);
       if(swap)
